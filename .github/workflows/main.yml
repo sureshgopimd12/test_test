@@ -1,0 +1,15 @@
+stages:
+  - test
+
+test_job:
+  stage: test
+  image: python:3.9
+  script:
+    - pip install requests
+    - python my_script.py
+    - |
+      curl -X POST "https://api.telegram.org/bot6222081707:AAHs1oxyC657ZwDtnOxxEVi6qq7VmbWx3VY/sendMessage" \
+      -d "chat_id=-846727139" \
+      -d "text=Your pipeline has completed."
+  only:
+    - main
