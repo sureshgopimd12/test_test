@@ -20,8 +20,8 @@ jobs:
       run: echo "::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/})"
     - name: Send notification
       env:
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        TELEGRAM_BOT_TOKEN: "6222081707:AAHs1oxyC657ZwDtnOxxEVi6qq7VmbWx3VY"
+        TELEGRAM_CHAT_ID: "-846727139"
       run: |
         curl -F chat_id="${TELEGRAM_CHAT_ID}" \
         -F "caption=Your workflow on branch ${{ steps.branch-name.outputs.branch }} has completed with comment ${{ github.event.head_commit.message }}." \
