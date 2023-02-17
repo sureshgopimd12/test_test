@@ -1,3 +1,4 @@
+
 name: My workflow
 
 on:
@@ -8,6 +9,9 @@ jobs:
   send_notification:
     runs-on: ubuntu-latest
     steps:
+    - name: Get branch name
+      id: branch-name
+      run: echo "::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/})"
     - name: Send notification
       env:
         TELEGRAM_BOT_TOKEN: "6222081707:AAHs1oxyC657ZwDtnOxxEVi6qq7VmbWx3VY"
@@ -15,4 +19,5 @@ jobs:
       run: |
         curl -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
         -d "chat_id=${TELEGRAM_CHAT_ID}" \
-        -d "text=Your workflow has completed."
+        -d "text=Your workflow on branch ${{ steps.branch-name.outputs.branch }} has completed with comment ${{ github.event.head_commit.message }}."
+
