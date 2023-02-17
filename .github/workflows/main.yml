@@ -1,5 +1,4 @@
-
-name: My workflow
+name: Laravel
 
 on:
   push:
@@ -9,12 +8,6 @@ jobs:
   send_notification:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.8'
     - name: Get branch name
       id: branch-name
       run: echo "::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/})"
@@ -23,18 +16,6 @@ jobs:
         TELEGRAM_BOT_TOKEN: "6222081707:AAHs1oxyC657ZwDtnOxxEVi6qq7VmbWx3VY"
         TELEGRAM_CHAT_ID: "-846727139"
       run: |
-        curl -F chat_id="${TELEGRAM_CHAT_ID}" \
-        -F "caption=Your workflow on branch ${{ steps.branch-name.outputs.branch }} has completed with comment ${{ github.event.head_commit.message }}." \
-        -F photo=@"${{ github.workspace }}/screenshot.png" \
-        "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto"
-      if: always()
-    - name: Take screenshot
-      run: |
-        sudo apt-get update
-        sudo apt-get install -yqq xvfb
-        sudo apt-get install -yqq imagemagick
-        Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-        export DISPLAY=:99
-        sleep 3
-        echo "Taking screenshot..."
-        import -window root -crop 1024x600+0+0 -quality 95 "${{ github.workspace }}/screenshot.png"
+        curl -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+        -d "chat_id=${TELEGRAM_CHAT_ID}" \
+        -d "text=Branch ${{ steps.branch-name.outputs.branch }}. Comment ${{ github.event.head_commit.message }}."
